@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="#">Spend Management</a>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/logout}">Logout</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h1>Dashboard</h1>
+            <p>Welcome to the Spend Management System.</p>
+            <div>
+                <a th:href="@{/reports/excel}" class="btn btn-success">Download Excel Report</a>
+                <a th:href="@{/reports/pdf}" class="btn btn-danger">Download PDF Report</a>
+            </div>
+        </div>
+    </div>
+    <div class="row mt-4">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Transactions</h5>
+                    <p class="card-text">View and manage spend transactions.</p>
+                    <a th:href="@{/transactions}" class="btn btn-primary">Go to Transactions</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Categories</h5>
+                    <p class="card-text">Manage spend categories.</p>
+                    <a th:href="@{/categories}" class="btn btn-primary">Go to Categories</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Suppliers</h5>
+                    <p class="card-text">Manage suppliers.</p>
+                    <a th:href="@{/suppliers}" class="btn btn-primary">Go to Suppliers</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4" th:if="${!maverickSpend.isEmpty()}">
+        <div class="col-md-12">
+            <h2>Maverick Spend</h2>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Description</th>
+                    <th>Amount</th>
+                    <th>Date</th>
+                    <th>Type</th>
+                    <th>Category</th>
+                    <th>Supplier</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="transaction : ${maverickSpend}">
+                    <td th:text="${transaction.id}"></td>
+                    <td th:text="${transaction.description}"></td>
+                    <td th:text="${transaction.amount}"></td>
+                    <td th:text="${transaction.date}"></td>
+                    <td th:text="${transaction.type}"></td>
+                    <td th:text="${transaction.category.name}"></td>
+                    <td th:text="${transaction.supplier.name}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <h2>Spend by Category</h2>
+            <canvas id="spendByCategoryChart"></canvas>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    fetch('/api/dashboard/spend-by-category')
+        .then(response => response.json())
+        .then(data => {
+            const ctx = document.getElementById('spendByCategoryChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(data),
+                    datasets: [{
+                        label: 'Spend by Category',
+                        data: Object.values(data),
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        });
+</script>
+</body>
+</html>

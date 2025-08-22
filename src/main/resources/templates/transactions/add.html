@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Transaction</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container">
+    <h1>Add Transaction</h1>
+    <form th:action="@{/transactions/add}" th:object="${transaction}" method="post">
+        <div class="form-group">
+            <label for="description">Description</label>
+            <input type="text" id="description" th:field="*{description}" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label for="amount">Amount</label>
+            <input type="number" step="0.01" id="amount" th:field="*{amount}" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label for="date">Date</label>
+            <input type="date" id="date" th:field="*{date}" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label for="type">Type</label>
+            <select id="type" th:field="*{type}" class="form-control" required>
+                <option th:each="typeOpt : ${T(com.example.template.domain.TransactionType).values()}"
+                        th:value="${typeOpt}" th:text="${typeOpt}"></option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="category">Category</label>
+            <select id="category" th:field="*{category}" class="form-control" required>
+                <option th:each="cat : ${categories}" th:value="${cat.id}" th:text="${cat.name}"></option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="supplier">Supplier</label>
+            <select id="supplier" th:field="*{supplier}" class="form-control" required>
+                <option th:each="sup : ${suppliers}" th:value="${sup.id}" th:text="${sup.name}"></option>
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Save</button>
+        <a th:href="@{/transactions}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+</body>
+</html>
