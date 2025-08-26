@@ -4,6 +4,7 @@ import com.example.template.domain.Supplier;
 import com.example.template.repository.SupplierRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,7 +29,8 @@ public class SupplierServiceImpl implements SupplierService {
 
     @Override
     public List<Supplier> findAll() {
-        return supplierRepository.findAll();
+        List<Supplier> suppliers = supplierRepository.findAll();
+        return suppliers != null ? suppliers : Collections.emptyList();
     }
 
     @Override
